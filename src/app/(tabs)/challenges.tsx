@@ -40,21 +40,31 @@ export default function ChallengesScreen() {
     const newChallenge = {
       strictness: selected,
       days: numDays,
-      startDate: new Date().toISOString(),
+      startDate: "2026-08-20T00:00:00.000Z",
     };
 
     await AsyncStorage.setItem('currentChallenge', JSON.stringify(newChallenge));
     setChallenge(newChallenge);
+    setShowDropdown(false);
     alert('Challenge saved!');
   };
 
   const onEditPress = () => {
     if (challenge !== null) {
-        setSelected(challenge.strictness);
-        setNum(challenge.days);
+      setSelected(challenge.strictness);
+      setNum(challenge.days);
     }
     setShowDropdown(true);
-    };
+  };
+
+  const onDelete = async () => {
+    await AsyncStorage.removeItem('currentChallenge');
+    setChallenge(null);
+    setSelected("");
+    setNum("");
+    setShowDropdown(false);
+    alert('Challenge deleted!');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -66,7 +76,10 @@ export default function ChallengesScreen() {
         )}
 
         {challenge !== null && (
+          <>
             <Button title="Edit Challenge" onPress={onEditPress} />
+            <Button title="Delete Challenge" onPress={onDelete} color="red" />
+          </>
         )}
 
         {showDropdown && (
