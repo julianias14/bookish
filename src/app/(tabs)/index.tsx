@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -12,14 +13,18 @@ type Challenge = {
 export default function Home() {
   const [challenge, setChallenge] = useState<Challenge | null>(null);
 
-  useEffect(() => {
-    loadChallenge();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadChallenge();
+    }, [])
+  );
 
   const loadChallenge = async () => {
     const saved = await AsyncStorage.getItem('currentChallenge');
     if (saved !== null) {
       setChallenge(JSON.parse(saved));
+    } else {
+      setChallenge(null);
     }
   };
 
