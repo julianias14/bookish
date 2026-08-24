@@ -1,6 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, TextInput } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
+
 
 
 export default function ChallengesScreen() {
@@ -12,6 +14,21 @@ export default function ChallengesScreen() {
       {key:'1', value:'hard'},
       {key:'2', value:'soft'},
   ]
+
+  const onSave = async () => {
+    if (selected === "" || numDays === "") {
+        alert('Please fill in both fields before saving.');
+        return;
+        }
+    const challenge = {
+      strictness: selected,
+      days: numDays,
+      startDate: new Date().toISOString(),
+    };
+
+    await AsyncStorage.setItem('currentChallenge', JSON.stringify(challenge));
+    alert('Challenge saved!');
+};
 
   return (
     <ScrollView style={styles.container}>
@@ -33,6 +50,7 @@ export default function ChallengesScreen() {
             keyboardType="numeric"
           />
         <Text style={styles.result}>Number entered: {numDays}</Text>
+        <Button title="Save" onPress={onSave} />
       </>
         )}
     </ScrollView>
